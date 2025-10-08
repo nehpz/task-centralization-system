@@ -18,15 +18,15 @@ echo ""
 
 # Check if script exists
 if [ ! -f "$SYNC_SCRIPT" ]; then
-	echo "❌ Error: $SYNC_SCRIPT not found"
-	exit 1
+  echo "❌ Error: $SYNC_SCRIPT not found"
+  exit 1
 fi
 
 # Check if script is executable
 if [ ! -x "$SYNC_SCRIPT" ]; then
-	echo "❌ Error: $SYNC_SCRIPT is not executable"
-	echo "Run: chmod +x $SYNC_SCRIPT"
-	exit 1
+  echo "❌ Error: $SYNC_SCRIPT is not executable"
+  echo "Run: chmod +x $SYNC_SCRIPT"
+  exit 1
 fi
 
 # Create cron entry
@@ -34,22 +34,25 @@ CRON_ENTRY="*/15 * * * * $SYNC_SCRIPT"
 
 # Check if cron job already exists
 if crontab -l 2>/dev/null | grep -F "$SYNC_SCRIPT" >/dev/null; then
-	echo "⚠️  Cron job already exists:"
-	crontab -l | grep -F "$SYNC_SCRIPT"
-	echo ""
-	read -r -p "Replace existing cron job? (yes/no): " replace
-	if [[ ! "$replace" =~ ^[Yy] ]]; then
-		echo "Installation cancelled."
-		exit 0
-	fi
+  echo "⚠️  Cron job already exists:"
+  crontab -l | grep -F "$SYNC_SCRIPT"
+  echo ""
+  read -r -p "Replace existing cron job? (yes/no): " replace
+  if [[ ! "$replace" =~ ^[Yy] ]]; then
+    echo "Installation cancelled."
+    exit 0
+  fi
 
-	# Remove old entry
-	crontab -l | grep -v -F "$SYNC_SCRIPT" | crontab -
-	echo "✓ Removed old cron job"
+  # Remove old entry
+  crontab -l | grep -v -F "$SYNC_SCRIPT" | crontab -
+  echo "✓ Removed old cron job"
 fi
 
 # Add new cron entry
-(crontab -l 2>/dev/null; echo "$CRON_ENTRY") | crontab -
+(
+  crontab -l 2>/dev/null
+  echo "$CRON_ENTRY"
+) | crontab -
 
 echo ""
 echo "✅ Cron job installed successfully!"

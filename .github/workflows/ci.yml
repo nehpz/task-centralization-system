@@ -58,7 +58,7 @@ jobs:
         run: uv python install 3.11
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Run Ruff linter
         run: uv run ruff check src/ scripts/
@@ -81,7 +81,7 @@ jobs:
         run: uv python install 3.11
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Run mypy
         run: uv run mypy src/ scripts/
@@ -102,7 +102,7 @@ jobs:
         run: uv python install 3.11
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-extras
 
       - name: Run tests
         run: uv run pytest --cov=src --cov-report=term-missing
