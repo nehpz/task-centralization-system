@@ -285,7 +285,24 @@ See [CLAUDE.md](CLAUDE.md) for detailed architecture and development guide.
 ```bash
 # Install dependencies including dev tools
 uv sync
+```
 
+### Code Quality
+
+```bash
+# Lint code (check for issues)
+uv run ruff check src/ scripts/
+
+# Format code (auto-fix style issues)
+uv run ruff format src/ scripts/
+
+# Run both linting and formatting
+uv run ruff check --fix src/ scripts/ && uv run ruff format src/ scripts/
+```
+
+### Testing
+
+```bash
 # Run tests
 uv run pytest
 

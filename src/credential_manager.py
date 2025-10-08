@@ -6,10 +6,8 @@ Securely load and manage credentials for Granola API, Notion API, and LLM servic
 
 import json
 import logging
-import os
 from pathlib import Path
-from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +15,7 @@ logger = logging.getLogger(__name__)
 class CredentialManager:
     """Manage credentials for all integrations"""
 
-    def __init__(self, config_path: Optional[str] = None):
+    def __init__(self, config_path: str | None = None):
         """
         Initialize credential manager
 
@@ -31,7 +29,7 @@ class CredentialManager:
 
         self.credentials = self._load_credentials()
 
-    def _load_credentials(self) -> Dict[str, Any]:
+    def _load_credentials(self) -> dict[str, Any]:
         """
         Load credentials from config file and auto-discover Granola credentials
 
@@ -44,10 +42,12 @@ class CredentialManager:
         # If config file exists, merge it in (config file takes precedence)
         if self.config_path.exists():
             try:
-                with open(self.config_path, 'r') as f:
+                with open(self.config_path) as f:
                     config_creds = json.load(f)
                 creds.update(config_creds)
-                logger.info(f"Loaded config from {self.config_path} and merged with auto-discovered Granola credentials")
+                logger.info(
+                    f"Loaded config from {self.config_path} and merged with auto-discovered Granola credentials"
+                )
             except Exception as e:
                 logger.error(f"Error loading credentials from {self.config_path}: {str(e)}")
         else:
@@ -55,7 +55,7 @@ class CredentialManager:
 
         return creds
 
-    def _load_from_granola_app(self) -> Dict[str, Any]:
+    def _load_from_granola_app(self) -> dict[str, Any]:
         """
         Load Granola credentials directly from app storage
 
@@ -65,7 +65,9 @@ class CredentialManager:
         Returns:
             Dictionary with Granola credentials
         """
-        granola_creds_path = Path.home() / "Library" / "Application Support" / "Granola" / "supabase.json"
+        granola_creds_path = (
+            Path.home() / "Library" / "Application Support" / "Granola" / "supabase.json"
+        )
 
         if not granola_creds_path.exists():
             logger.error(f"Granola credentials not found at: {granola_creds_path}")
@@ -73,14 +75,14 @@ class CredentialManager:
             return {}
 
         try:
-            with open(granola_creds_path, 'r') as f:
+            with open(granola_creds_path) as f:
                 data = json.load(f)
 
             # Parse the workos_tokens string into a dict
-            workos_tokens = json.loads(data['workos_tokens'])
-            access_token = workos_tokens.get('access_token')
-            refresh_token = workos_tokens.get('refresh_token')
-            expires_at = workos_tokens.get('expires_at')
+            workos_tokens = json.loads(data["workos_tokens"])
+            access_token = workos_tokens.get("access_token")
+            refresh_token = workos_tokens.get("refresh_token")
+            expires_at = workos_tokens.get("expires_at")
 
             if not access_token:
                 logger.error("No access token found in Granola credentials")
@@ -94,14 +96,14 @@ class CredentialManager:
                     "access_token": access_token,
                     "refresh_token": refresh_token,
                     "expires_at": expires_at,
-                    "source_path": str(granola_creds_path)
+                    "source_path": str(granola_creds_path),
                 }
             }
         except Exception as e:
             logger.error(f"Error reading Granola credentials: {str(e)}")
             return {}
 
-    def get_granola_token(self) -> Optional[str]:
+    def get_granola_token(self) -> str | None:
         """
         Get Granola access token
 
@@ -123,7 +125,7 @@ class CredentialManager:
 
         return access_token
 
-    def get_notion_credentials(self) -> Optional[Dict[str, str]]:
+    def get_notion_credentials(self) -> dict[str, str] | None:
         """
         Get Notion API credentials
 
@@ -147,12 +149,9 @@ class CredentialManager:
             logger.error("Notion credentials incomplete (missing api_key or database_id)")
             return None
 
-        return {
-            "api_key": api_key,
-            "database_id": database_id
-        }
+        return {"api_key": api_key, "database_id": database_id}
 
-    def get_llm_credentials(self) -> Optional[Dict[str, str]]:
+    def get_llm_credentials(self) -> dict[str, str] | None:
         """
         Get LLM API credentials
 
@@ -173,13 +172,9 @@ class CredentialManager:
             logger.error("LLM API key not found")
             return None
 
-        return {
-            "provider": provider,
-            "api_key": api_key,
-            "model": model
-        }
+        return {"provider": provider, "api_key": api_key, "model": model}
 
-    def get_user_info(self) -> Dict[str, str]:
+    def get_user_info(self) -> dict[str, str]:
         """
         Get user information
 
@@ -188,10 +183,7 @@ class CredentialManager:
         """
         if "user" not in self.credentials:
             logger.warning("User info not configured, using defaults")
-            return {
-                "name": "User",
-                "email": "user@example.com"
-            }
+            return {"name": "User", "email": "user@example.com"}
 
         return self.credentials["user"]
 
@@ -217,7 +209,7 @@ class CredentialManager:
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
 
         try:
-            with open(self.config_path, 'w') as f:
+            with open(self.config_path, "w") as f:
                 json.dump(self.credentials, f, indent=2)
             logger.info(f"Credentials saved to {self.config_path}")
         except Exception as e:
@@ -238,10 +230,7 @@ class CredentialManager:
 
 if __name__ == "__main__":
     # Test credential loading
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
+    logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
     manager = CredentialManager()
 

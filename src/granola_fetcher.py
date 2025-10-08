@@ -9,10 +9,11 @@ https://josephthacker.com/hacking/2025/05/08/reverse-engineering-granola-notes.h
 
 import json
 import logging
-import requests
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any
+
+import requests
 
 from credential_manager import CredentialManager
 
@@ -42,11 +43,8 @@ class GranolaFetcher:
         logger.info("GranolaFetcher initialized")
 
     def fetch_documents(
-        self,
-        limit: int = 100,
-        offset: int = 0,
-        created_after: Optional[datetime] = None
-    ) -> Optional[List[Dict[str, Any]]]:
+        self, limit: int = 100, offset: int = 0, created_after: datetime | None = None
+    ) -> list[dict[str, Any]] | None:
         """
         Fetch documents from Granola API
 
@@ -65,14 +63,10 @@ class GranolaFetcher:
             "Content-Type": "application/json",
             "Accept": "*/*",
             "User-Agent": f"Granola/{self.API_VERSION}",
-            "X-Client-Version": self.API_VERSION
+            "X-Client-Version": self.API_VERSION,
         }
 
-        payload = {
-            "limit": limit,
-            "offset": offset,
-            "include_last_viewed_panel": True
-        }
+        payload = {"limit": limit, "offset": offset, "include_last_viewed_panel": True}
 
         # Add created_after filter if provided
         if created_after:
@@ -91,10 +85,9 @@ class GranolaFetcher:
                 documents = data["docs"]
                 logger.info(f"Successfully fetched {len(documents)} documents")
                 return documents
-            else:
-                logger.warning("No 'docs' key in API response")
-                logger.debug(f"Response keys: {data.keys()}")
-                return []
+            logger.warning("No 'docs' key in API response")
+            logger.debug(f"Response keys: {data.keys()}")
+            return []
 
         except requests.exceptions.Timeout:
             logger.error("Request timed out after 30 seconds")
@@ -113,7 +106,7 @@ class GranolaFetcher:
             logger.error(f"Unexpected error: {e}")
             return None
 
-    def fetch_new_documents(self) -> Optional[List[Dict[str, Any]]]:
+    def fetch_new_documents(self) -> list[dict[str, Any]] | None:
         """
         Fetch documents created since last check
 
@@ -141,7 +134,7 @@ class GranolaFetcher:
         """
         if self.last_check_file.exists():
             try:
-                with open(self.last_check_file, 'r') as f:
+                with open(self.last_check_file) as f:
                     timestamp_str = f.read().strip()
                     last_check = datetime.fromisoformat(timestamp_str)
                     logger.debug(f"Loaded last check: {last_check.isoformat()}")
@@ -160,13 +153,13 @@ class GranolaFetcher:
         """
         try:
             now = datetime.now()
-            with open(self.last_check_file, 'w') as f:
+            with open(self.last_check_file, "w") as f:
                 f.write(now.isoformat())
             logger.debug(f"Updated last check to {now.isoformat()}")
         except Exception as e:
             logger.error(f"Error saving last check timestamp: {e}")
 
-    def get_document_by_id(self, doc_id: str) -> Optional[Dict[str, Any]]:
+    def get_document_by_id(self, doc_id: str) -> dict[str, Any] | None:
         """
         Get a specific document by ID
 
@@ -193,10 +186,7 @@ class GranolaFetcher:
 
 if __name__ == "__main__":
     # Test Granola API access
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
+    logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
     print("=== Testing Granola API Access ===\n")
 

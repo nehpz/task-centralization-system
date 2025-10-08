@@ -32,6 +32,7 @@ dev = [
 dev = [
     "pytest>=8.0.0",
     "pytest-cov>=4.1.0",
+    "ruff>=0.14.0",
 ]
 
 [build-system]
@@ -43,3 +44,6 @@ packages = ["src"]
 
 [project.scripts]
 granola-sync = "granola_sync:main"
+
+[tool.ruff]
+# Ruff configuration lives in ruff.toml
