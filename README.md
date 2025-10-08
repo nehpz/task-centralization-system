@@ -4,7 +4,6 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![UV](https://img.shields.io/badge/uv-latest-blue)](https://github.com/astral-sh/uv)
-[![CI](https://github.com/yourusername/task-centralization-system/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/task-centralization-system/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Transform your meeting notes into actionable insights automatically. This system syncs meetings from [Granola](https://www.granola.ai), enriches them with AI-extracted action items, decisions, and entities, then integrates seamlessly with your Obsidian vault.
@@ -286,35 +285,9 @@ See [CLAUDE.md](CLAUDE.md) for detailed architecture and development guide.
 ```bash
 # Install dependencies including dev tools
 uv sync
-
-# Install pre-commit hooks (recommended)
-uv run pre-commit install
 ```
 
-### Pre-commit Hooks (Recommended)
-
-Pre-commit hooks automatically run all quality checks before each commit:
-
-```bash
-# Install hooks (one-time setup)
-uv run pre-commit install
-
-# Run hooks manually on all files
-uv run pre-commit run --all-files
-
-# Update hook versions
-uv run pre-commit autoupdate
-```
-
-**Hooks include:**
-- Ruff (linting + formatting)
-- mypy (type checking)
-- typos (spell checking)
-- shfmt + shellcheck (shell scripts)
-- actionlint (GitHub Actions)
-- File checks (trailing whitespace, large files, etc.)
-
-### Manual Code Quality Checks
+### Code Quality
 
 ```bash
 # Lint code (check for issues)
@@ -326,8 +299,8 @@ uv run ruff format src/ scripts/
 # Type check with mypy
 uv run mypy src/ scripts/
 
-# Run all checks manually
-uv run pre-commit run --all-files
+# Run all checks
+uv run ruff check --fix src/ scripts/ && uv run ruff format src/ scripts/ && uv run mypy src/ scripts/
 ```
 
 ### Testing

@@ -117,17 +117,18 @@ def test_credential_merging_logic(mock_granola_creds_path, mock_config_path):
     Ensure that credentials from the Granola app and a custom config file
     are merged correctly, with the custom file taking precedence.
     """
-    # Set up Granola credentials
+    # Set up Granola credentials, including a user with an email
     granola_data = {
         "workos_tokens": json.dumps({"access_token": "granola_token"}),
-        "user": {"name": "Granola User"},  # This should be overridden
+        "user": {"name": "Granola User", "email": "granola@example.com"},
     }
     mock_granola_creds_path.write_text(json.dumps(granola_data))
 
-    # Set up a custom config file with its own data and an override
+    # Set up a custom config file that overrides the user, but only with a name.
+    # The entire 'user' object from Granola should be replaced.
     config_data = {
         "llm": {"provider": "openai", "api_key": "fake_llm_key"},
-        "user": {"name": "Config User"},  # This should take precedence
+        "user": {"name": "Config User"},  # This object takes precedence
     }
     mock_config_path.write_text(json.dumps(config_data))
 
@@ -137,7 +138,11 @@ def test_credential_merging_logic(mock_granola_creds_path, mock_config_path):
     # Verify that data from both sources is present and conflicts are resolved correctly
     assert manager.get_granola_token() == "granola_token"  # From Granola
     assert manager.get_llm_credentials()["provider"] == "openai"  # From config
-    assert manager.get_user_info()["name"] == "Config User"  # Override applied
+
+    # Verify that the user from the config file completely replaced the Granola user
+    user_info = manager.get_user_info()
+    assert user_info["name"] == "Config User"
+    assert "email" not in user_info  # The email from Granola should be gone
 
 
 def test_get_notion_credentials_success():

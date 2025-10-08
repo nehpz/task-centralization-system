@@ -10,7 +10,7 @@
 cd "$(dirname "$0")/.." || exit 1
 
 # Run the sync
-./scripts/granola_sync.py >> logs/cron.log 2>&1
+./scripts/granola_sync.py >>logs/cron.log 2>&1
 
 # Exit with sync script's exit code
 exit $?
