@@ -213,6 +213,30 @@ def test_convert_blockquote(converter):
     assert converter.convert(doc) == expected_md
 
 
+def test_convert_multi_paragraph_blockquote(converter):
+    """Test conversion of a blockquote with multiple paragraphs."""
+    doc = {
+        "type": "doc",
+        "content": [
+            {
+                "type": "blockquote",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [{"type": "text", "text": "First paragraph."}],
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": [{"type": "text", "text": "Second paragraph."}],
+                    },
+                ],
+            }
+        ],
+    }
+    expected_md = "> First paragraph.\n>\n> Second paragraph."
+    assert converter.convert(doc) == expected_md
+
+
 def test_convert_horizontal_rule(converter):
     """Test conversion of a horizontal rule."""
     doc = {"type": "doc", "content": [{"type": "horizontalRule"}]}

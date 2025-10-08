@@ -1,6 +1,4 @@
 import json
-import logging
-import shutil
 from pathlib import Path
 from unittest.mock import patch
 
@@ -8,28 +6,15 @@ import pytest
 
 from src.credential_manager import CredentialManager
 
-# Mute logging for most tests to keep output clean
-logging.basicConfig(level=logging.CRITICAL)
-
 
 @pytest.fixture
-def mock_home(monkeypatch):
+def mock_home(monkeypatch, tmp_path: Path):
     """
-    Fixture to mock the user's home directory and ensure it's clean
-    for each test.
+    Fixture to mock the user's home directory using pytest's temporary directory.
+    This makes the test cross-platform and avoids manual cleanup.
     """
-    mock_home_dir = Path("/tmp/mock_home_for_tests")
-    # Ensure the directory is clean before the test
-    if mock_home_dir.exists():
-        shutil.rmtree(mock_home_dir)
-    mock_home_dir.mkdir(parents=True, exist_ok=True)
-
-    monkeypatch.setattr(Path, "home", lambda: mock_home_dir)
-
-    yield mock_home_dir
-
-    # Clean up after the test
-    shutil.rmtree(mock_home_dir)
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)
+    return tmp_path
 
 
 @pytest.fixture
@@ -198,7 +183,7 @@ def test_get_llm_credentials_incomplete():
         assert manager.get_llm_credentials() is None
 
 
-def test_default_user_info_and_vault_path():
+def test_default_user_info_and_vault_path(mock_home: Path):
     """
     Check that sensible default values are returned for user info and the vault path
     when they are not specified in any config file.
@@ -207,8 +192,8 @@ def test_default_user_info_and_vault_path():
         manager = CredentialManager()
         # Verify default user info
         assert manager.get_user_info() == {"name": "User", "email": "user@example.com"}
-        # Verify default vault path
-        expected_vault_path = Path.home() / "Obsidian" / "zenyth"
+        # Verify default vault path, ensuring it uses the mocked home directory
+        expected_vault_path = mock_home / "Obsidian" / "zenyth"
         assert manager.get_vault_path() == expected_vault_path
 
 
