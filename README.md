@@ -286,9 +286,35 @@ See [CLAUDE.md](CLAUDE.md) for detailed architecture and development guide.
 ```bash
 # Install dependencies including dev tools
 uv sync
+
+# Install pre-commit hooks (recommended)
+uv run pre-commit install
 ```
 
-### Code Quality
+### Pre-commit Hooks (Recommended)
+
+Pre-commit hooks automatically run all quality checks before each commit:
+
+```bash
+# Install hooks (one-time setup)
+uv run pre-commit install
+
+# Run hooks manually on all files
+uv run pre-commit run --all-files
+
+# Update hook versions
+uv run pre-commit autoupdate
+```
+
+**Hooks include:**
+- Ruff (linting + formatting)
+- mypy (type checking)
+- typos (spell checking)
+- shfmt + shellcheck (shell scripts)
+- actionlint (GitHub Actions)
+- File checks (trailing whitespace, large files, etc.)
+
+### Manual Code Quality Checks
 
 ```bash
 # Lint code (check for issues)
@@ -300,8 +326,8 @@ uv run ruff format src/ scripts/
 # Type check with mypy
 uv run mypy src/ scripts/
 
-# Run all checks
-uv run ruff check --fix src/ scripts/ && uv run ruff format src/ scripts/ && uv run mypy src/ scripts/
+# Run all checks manually
+uv run pre-commit run --all-files
 ```
 
 ### Testing
