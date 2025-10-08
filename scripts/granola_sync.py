@@ -13,8 +13,8 @@ import logging
 from pathlib import Path
 from datetime import datetime
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent / 'src'))
+# Add src to path (go up one level from scripts/)
+sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
 from credential_manager import CredentialManager
 from granola_fetcher import GranolaFetcher
@@ -24,7 +24,8 @@ from processor import GranolaProcessor
 
 def setup_logging():
     """Configure logging with file and console handlers"""
-    log_dir = Path(__file__).parent / 'logs'
+    # Go up to project root, then into logs/
+    log_dir = Path(__file__).parent.parent / 'logs'
     log_dir.mkdir(exist_ok=True)
 
     log_file = log_dir / 'granola_sync.log'

@@ -6,11 +6,11 @@
 # It ensures the correct environment and paths are set.
 #
 
-# Set working directory to script location
-cd "$(dirname "$0")" || exit 1
+# Set working directory to project root (parent of scripts/)
+cd "$(dirname "$0")/.." || exit 1
 
 # Run the sync
-/usr/bin/env python3 granola_sync.py >> logs/cron.log 2>&1
+./scripts/granola_sync.py >> logs/cron.log 2>&1
 
 # Exit with sync script's exit code
 exit $?
