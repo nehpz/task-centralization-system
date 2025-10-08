@@ -57,13 +57,56 @@ cd task-centralization-system
 
 # Install dependencies (creates .venv automatically)
 uv sync
+```
 
-# Set up environment variables
+### Configuration
+
+**Step 1: Get Perplexity API Key**
+- Sign up at [perplexity.ai](https://www.perplexity.ai)
+- Get API key from [Settings → API](https://www.perplexity.ai/settings/api)
+- Free tier includes $5/month credits
+
+**Step 2: Configure LLM (choose one method)**
+
+**Option A: Environment Variable (simplest)**
+```bash
 export PERPLEXITY_API_KEY="pplx-..."
-
-# Add to your shell profile for persistence
 echo 'export PERPLEXITY_API_KEY="pplx-..."' >> ~/.zshrc
 ```
+
+**Option B: Config File (recommended for customization)**
+```bash
+# Copy example config
+cp config/credentials.example.json ~/.config/task-centralization/credentials.json
+
+# Edit with your values
+nano ~/.config/task-centralization/credentials.json
+```
+
+Example `~/.config/task-centralization/credentials.json`:
+```json
+{
+  "llm": {
+    "provider": "perplexity",
+    "api_key": "pplx-...",
+    "model": "sonar"
+  },
+  "vault": {
+    "path": "/Users/you/Obsidian/your-vault",
+    "inbox_meetings_path": "00_Inbox/Meetings"
+  }
+}
+```
+
+**Available models:**
+- `sonar` - $1/$1 per 1M tokens (recommended - best cost/performance)
+- `sonar-pro` - $3/$15 per 1M tokens (higher quality, 15x more expensive on output)
+
+**Step 3: Granola credentials (automatic)**
+
+No setup needed! Credentials are automatically read from Granola app:
+- macOS: `~/Library/Application Support/Granola/supabase.json`
+- Just install Granola and log in once
 
 ### First Run
 
@@ -151,48 +194,6 @@ Final Note with Actions/Decisions/Entities
 ## Notes
 [Original meeting notes preserved here...]
 ```
-
----
-
-## Configuration
-
-### Environment Variables
-
-**Required (if not using config file):**
-- `PERPLEXITY_API_KEY` - Perplexity API key for LLM enrichment
-
-### Configuration File (Optional)
-
-**Granola credentials are auto-discovered** - no manual configuration needed! The system automatically reads from `~/Library/Application Support/Granola/supabase.json` when Granola app is installed.
-
-Create `~/.config/task-centralization/credentials.json` **only if** you want to:
-- Configure LLM settings (instead of using `PERPLEXITY_API_KEY` env var)
-- Override vault path (instead of auto-detection)
-- Add Notion integration
-
-```json
-{
-  "llm": {
-    "provider": "perplexity",
-    "api_key": "pplx-your_api_key",
-    "model": "sonar-pro"
-  },
-  "vault": {
-    "path": "/path/to/your-vault",
-    "inbox_meetings_path": "00_Inbox/Meetings"
-  }
-}
-```
-
-**Available Perplexity models:**
-- `sonar` - $1 input / $1 output per 1M tokens (recommended for cost)
-- `sonar-pro` - $3 input / $15 output per 1M tokens (default, better quality)
-- `sonar-reasoning` - $1 input / $5 output per 1M tokens
-- `sonar-reasoning-pro` - $2 input / $8 output per 1M tokens
-
-**Config file templates:**
-- `config/credentials.minimal.json` - Clean copy-paste template (no comments)
-- `config/credentials.example.json` - Fully documented with all options
 
 ---
 
