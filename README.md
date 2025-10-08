@@ -296,8 +296,11 @@ uv run ruff check src/ scripts/
 # Format code (auto-fix style issues)
 uv run ruff format src/ scripts/
 
-# Run both linting and formatting
-uv run ruff check --fix src/ scripts/ && uv run ruff format src/ scripts/
+# Type check with mypy
+uv run mypy src/ scripts/
+
+# Run all checks
+uv run ruff check --fix src/ scripts/ && uv run ruff format src/ scripts/ && uv run mypy src/ scripts/
 ```
 
 ### Testing

@@ -65,7 +65,7 @@ class GranolaProcessor:
         """
         logger.info("Starting processing run...")
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "fetched": 0,
             "processed": 0,
@@ -191,7 +191,7 @@ class GranolaProcessor:
         """
         logger.info(f"Starting backfill for last {days} days...")
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "days": days,
             "fetched": 0,
