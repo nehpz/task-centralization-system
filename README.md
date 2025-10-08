@@ -161,9 +161,14 @@ Final Note with Actions/Decisions/Entities
 **Required (if not using config file):**
 - `PERPLEXITY_API_KEY` - Perplexity API key for LLM enrichment
 
-### Configuration File
+### Configuration File (Optional)
 
-Create `~/.config/task-centralization/credentials.json` to configure all settings in one place:
+**Granola credentials are auto-discovered** - no manual configuration needed! The system automatically reads from `~/Library/Application Support/Granola/supabase.json` when Granola app is installed.
+
+Create `~/.config/task-centralization/credentials.json` **only if** you want to:
+- Configure LLM settings (instead of using `PERPLEXITY_API_KEY` env var)
+- Override vault path (instead of auto-detection)
+- Add Notion integration
 
 ```json
 {
@@ -185,15 +190,7 @@ Create `~/.config/task-centralization/credentials.json` to configure all setting
 - `sonar-reasoning` - $1 input / $5 output per 1M tokens
 - `sonar-reasoning-pro` - $2 input / $8 output per 1M tokens
 
-See `config/credentials.example.json` for all available configuration options.
-
-### Auto-Discovery
-
-The system auto-discovers Granola credentials from:
-1. `~/Library/Application Support/Granola/supabase.json` (macOS)
-2. `~/.config/task-centralization/credentials.json` (fallback)
-
-If using environment variables, no config file is needed.
+See `config/credentials.example.json` for all available options including Notion integration.
 
 ---
 

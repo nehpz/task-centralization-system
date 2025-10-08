@@ -33,24 +33,27 @@ class CredentialManager:
 
     def _load_credentials(self) -> Dict[str, Any]:
         """
-        Load credentials from config file
+        Load credentials from config file and auto-discover Granola credentials
 
         Returns:
             Dictionary containing all credentials
         """
-        if not self.config_path.exists():
-            logger.warning(f"Credentials file not found at: {self.config_path}")
-            logger.info("Attempting to load Granola credentials from app storage...")
-            return self._load_from_granola_app()
+        # Start with auto-discovered Granola credentials
+        creds = self._load_from_granola_app()
 
-        try:
-            with open(self.config_path, 'r') as f:
-                creds = json.load(f)
-            logger.info(f"Successfully loaded credentials from {self.config_path}")
-            return creds
-        except Exception as e:
-            logger.error(f"Error loading credentials: {str(e)}")
-            return {}
+        # If config file exists, merge it in (config file takes precedence)
+        if self.config_path.exists():
+            try:
+                with open(self.config_path, 'r') as f:
+                    config_creds = json.load(f)
+                creds.update(config_creds)
+                logger.info(f"Loaded config from {self.config_path} and merged with auto-discovered Granola credentials")
+            except Exception as e:
+                logger.error(f"Error loading credentials from {self.config_path}: {str(e)}")
+        else:
+            logger.info("No config file found, using auto-discovered Granola credentials only")
+
+        return creds
 
     def _load_from_granola_app(self) -> Dict[str, Any]:
         """
