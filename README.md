@@ -158,33 +158,42 @@ Final Note with Actions/Decisions/Entities
 
 ### Environment Variables
 
-**Required:**
+**Required (if not using config file):**
 - `PERPLEXITY_API_KEY` - Perplexity API key for LLM enrichment
 
-**Optional:**
-- `ANTHROPIC_API_KEY` - If using Claude parser instead of Perplexity
+### Configuration File
 
-### Credentials
+Create `~/.config/task-centralization/credentials.json` to configure all settings in one place:
+
+```json
+{
+  "llm": {
+    "provider": "perplexity",
+    "api_key": "pplx-your_api_key",
+    "model": "sonar-pro"
+  },
+  "vault": {
+    "path": "/path/to/your-vault",
+    "inbox_meetings_path": "00_Inbox/Meetings"
+  }
+}
+```
+
+**Available Perplexity models:**
+- `sonar` - $1 input / $1 output per 1M tokens (recommended for cost)
+- `sonar-pro` - $3 input / $15 output per 1M tokens (default, better quality)
+- `sonar-reasoning` - $1 input / $5 output per 1M tokens
+- `sonar-reasoning-pro` - $2 input / $8 output per 1M tokens
+
+See `config/credentials.example.json` for all available configuration options.
+
+### Auto-Discovery
 
 The system auto-discovers Granola credentials from:
 1. `~/Library/Application Support/Granola/supabase.json` (macOS)
 2. `~/.config/task-centralization/credentials.json` (fallback)
 
-See `config/credentials.example.json` for manual configuration (rarely needed).
-
-### Vault Path
-
-Default: Auto-detects Obsidian vault at `~/Obsidian/`
-
-To override, create `~/.config/task-centralization/credentials.json`:
-```json
-{
-  "vault": {
-    "path": "~/Documents/MyVault",
-    "inbox_meetings_path": "00_Inbox/Meetings"
-  }
-}
-```
+If using environment variables, no config file is needed.
 
 ---
 

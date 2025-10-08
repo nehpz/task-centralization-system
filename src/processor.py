@@ -35,8 +35,18 @@ class GranolaProcessor:
         if enable_llm:
             try:
                 from llm_parser_perplexity import LLMParser
-                self.llm_parser = LLMParser()
-                logger.info("GranolaProcessor initialized with LLM enrichment")
+
+                # Get LLM config from credentials
+                llm_config = self.cred_manager.get_llm_config()
+                if llm_config:
+                    api_key = llm_config.get('api_key')
+                    model = llm_config.get('model', 'sonar-pro')
+                    self.llm_parser = LLMParser(api_key=api_key, model=model)
+                    logger.info(f"GranolaProcessor initialized with LLM enrichment (model: {model})")
+                else:
+                    # Fallback to environment variable
+                    self.llm_parser = LLMParser()
+                    logger.info("GranolaProcessor initialized with LLM enrichment (using env vars)")
             except Exception as e:
                 logger.warning(f"LLM parser initialization failed: {e}. Continuing without LLM enrichment.")
         else:
@@ -303,7 +313,7 @@ class GranolaProcessor:
 
         # Update metadata to indicate LLM enrichment
         metadata['llm_enriched'] = True
-        metadata['llm_model'] = 'perplexity-sonar-pro'
+        metadata['llm_model'] = f'perplexity-{self.llm_parser.model}'
 
         # Write enriched note back
         enriched_frontmatter = yaml.dump(metadata, default_flow_style=False, sort_keys=False)

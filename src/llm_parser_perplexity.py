@@ -21,12 +21,14 @@ logger = logging.getLogger(__name__)
 class LLMParser:
     """Parse meeting notes using Perplexity API"""
 
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
         """
         Initialize LLM parser with Perplexity API
 
         Args:
             api_key: Perplexity API key (defaults to PERPLEXITY_API_KEY env var)
+            model: Perplexity model to use (defaults to sonar-pro)
+                   Options: sonar, sonar-pro, sonar-reasoning, sonar-reasoning-pro
         """
         self.api_key = api_key or os.getenv('PERPLEXITY_API_KEY')
         if not self.api_key:
@@ -37,9 +39,9 @@ class LLMParser:
             api_key=self.api_key,
             base_url="https://api.perplexity.ai"
         )
-        self.model = "sonar-pro"  # Best model for structured outputs
+        self.model = model or "sonar-pro"  # Default to sonar-pro for structured outputs
 
-        logger.info("LLMParser initialized (Perplexity sonar-pro)")
+        logger.info(f"LLMParser initialized (Perplexity {self.model})")
 
     def get_json_schema(self) -> Dict[str, Any]:
         """
