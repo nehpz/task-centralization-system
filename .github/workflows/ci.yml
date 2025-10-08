@@ -18,6 +18,31 @@ jobs:
         with:
           fail_on_error: true
 
+  spellcheck:
+    name: Spell Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check spelling
+        uses: crate-ci/typos@v1.30.0
+        with:
+          files: "*.md src/ scripts/ .github/"
+
+  shellcheck:
+    name: Shell Script Format & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run shfmt
+        uses: luizm/action-sh-checker@v0.9.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          sh_checker_comment: false
+          sh_checker_exclude: ".git"
+
   lint:
     name: Lint & Format Check
     runs-on: ubuntu-latest
