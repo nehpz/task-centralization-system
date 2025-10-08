@@ -12,8 +12,8 @@ from typing import Any
 
 import yaml
 
-from credential_manager import CredentialManager
-from format_converter import MetadataExtractor, ProseMirrorConverter
+from .credential_manager import CredentialManager
+from .format_converter import MetadataExtractor, ProseMirrorConverter
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +120,7 @@ class ObsidianWriter:
             Safe filename
         """
         # Remove or replace invalid characters
-        safe = re.sub(r'[<>:"/\\|?*]', "", filename)
+        safe = re.sub(r'[<>:"/\\|?*!]', "", filename)
 
         # Replace multiple spaces with single space
         safe = re.sub(r"\s+", " ", safe)
@@ -226,15 +226,21 @@ class ObsidianWriter:
 
     def _extract_name(self, email_or_name: str) -> str:
         """
-        Extract person name from email or name string
+        Extract person name from email or name string.
+        Handles "Full Name <email@example.com>" format.
 
         Args:
-            email_or_name: Email address or name
+            email_or_name: Email address or name string.
 
         Returns:
-            Person name suitable for note title
+            Person name suitable for a note title.
         """
-        # If it's an email, extract the name part
+        # Check for "Name <email>" format
+        match = re.match(r"(.+?)\s*<.*>", email_or_name)
+        if match:
+            return match.group(1).strip()
+
+        # If it's just an email, extract the name part
         if "@" in email_or_name:
             name_part = email_or_name.split("@")[0]
 
@@ -246,6 +252,7 @@ class ObsidianWriter:
             name = " ".join(word.capitalize() for word in name_part.split())
 
             return name
+
         # Already a name, just return it
         return email_or_name
 
