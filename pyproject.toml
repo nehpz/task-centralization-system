@@ -1,0 +1,45 @@
+[project]
+name = "task-centralization-system"
+version = "0.2.0"
+description = "Automated meeting capture and LLM-powered action item extraction from Granola to Obsidian"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # Core API clients
+    "requests>=2.31.0",
+    "openai>=2.0.0",  # For Perplexity API (OpenAI-compatible)
+    "anthropic>=0.39.0",  # For Claude API (backup parser)
+
+    # Data processing
+    "pyyaml>=6.0.1",
+    "python-dateutil>=2.8.2",
+
+    # Optional: Notion backup validation (Phase 1 Week 3)
+    "notion-client>=2.2.1",
+
+    # Optional: Enhanced features
+    "colorlog>=6.8.2",  # Better logging
+    "python-Levenshtein>=0.25.0",  # Entity fuzzy matching
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[project.scripts]
+granola-sync = "granola_sync:main"
