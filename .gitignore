@@ -19,11 +19,8 @@ ENV/
 *.swp
 *.swo
 
-# Project specific
-.last_granola_check
-.sync_status.json
+# Project specific - runtime state and logs
 logs/
-*.log
 
 # Sample/test files that might contain real data
 sample_*.json

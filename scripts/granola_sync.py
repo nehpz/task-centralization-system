@@ -62,7 +62,8 @@ def setup_logging():
 
 def write_sync_status(results):
     """Write sync status to file for monitoring"""
-    status_file = Path(__file__).parent / '.sync_status.json'
+    # Go up to project root, then into logs/
+    status_file = Path(__file__).parent.parent / 'logs' / 'status.json'
 
     status = {
         'last_run': results['timestamp'],

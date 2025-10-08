@@ -38,7 +38,7 @@ class GranolaFetcher:
         if not self.token:
             raise ValueError("Granola access token not available")
 
-        self.last_check_file = Path(".last_granola_check")
+        self.last_check_file = Path("logs/.last_sync")
         logger.info("GranolaFetcher initialized")
 
     def fetch_documents(
