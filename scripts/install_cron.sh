@@ -50,7 +50,7 @@ fi
 
 # Add new cron entry
 (
-	crontab -l 2>/dev/null
+	crontab -l 2>/dev/null || true
 	echo "$CRON_ENTRY"
 ) | crontab -
 
