@@ -90,8 +90,7 @@ class CredentialManager:
 
             logger.info("Successfully loaded Granola credentials from app storage")
 
-            # Return in our standard format
-            return {
+            creds = {
                 "granola": {
                     "access_token": access_token,
                     "refresh_token": refresh_token,
@@ -99,6 +98,13 @@ class CredentialManager:
                     "source_path": str(granola_creds_path),
                 }
             }
+
+            # Also extract user info if available from the Granola file
+            if "user" in data and isinstance(data["user"], dict):
+                creds["user"] = data["user"]
+                logger.info("Loaded user info from Granola credentials")
+
+            return creds
         except Exception as e:
             logger.error(f"Error reading Granola credentials: {str(e)}")
             return {}

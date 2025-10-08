@@ -72,14 +72,22 @@ def test_sanitize_filename(writer, input_name, expected_name):
 @pytest.mark.parametrize(
     "email_or_name, expected",
     [
+        # Standard email-to-name conversions
         ("jane.doe@example.com", "Jane Doe"),
         ("john_smith@work.co.uk", "John Smith"),
-        ("Already a Name", "Already a Name"),
         ("test@test.com", "Test"),
+        # Plain name string
+        ("Already a Name", "Already a Name"),
+        # "Name <email>" format
+        ("Full Name <full@name.com>", "Full Name"),
+        # Edge cases from review
+        ("Name With Empty Brackets <>", "Name With Empty Brackets"),
+        ("Name With Spaced Brackets < >", "Name With Spaced Brackets"),
+        ("  Leading Space <email@test.com>", "Leading Space"),
     ],
 )
-def test_extract_name(writer, email_or_name, expected):
-    """Test the extraction of names from email addresses."""
+def test_extract_name_handles_various_formats(writer, email_or_name, expected):
+    """Test the extraction of names from various email and name string formats."""
     assert writer._extract_name(email_or_name) == expected
 
 
