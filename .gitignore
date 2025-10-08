@@ -26,6 +26,9 @@ logs/
 sample_*.json
 sample_*.md
 
+# Config examples (users should copy and customize)
+config/credentials.example.json
+
 # Testing
 .coverage
 htmlcov/

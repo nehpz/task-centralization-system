@@ -69,10 +69,10 @@ echo 'export PERPLEXITY_API_KEY="pplx-..."' >> ~/.zshrc
 
 ```bash
 # Test manual sync (processes new meetings)
-./scripts/granola_sync.py
+/path/to/task-centralization-system/scripts/granola_sync.py
 
 # Check the output in your Obsidian vault
-# Default location: ~/Obsidian/[vault-name]/00_Inbox/Meetings/
+# Default location: /path/to/your-vault/00_Inbox/Meetings/
 ```
 
 ### Automated Sync (Optional)
@@ -80,7 +80,7 @@ echo 'export PERPLEXITY_API_KEY="pplx-..."' >> ~/.zshrc
 Install a cron job to sync every 15 minutes:
 
 ```bash
-./scripts/install_cron.sh
+/path/to/task-centralization-system/scripts/install_cron.sh
 ```
 
 This adds:
@@ -193,41 +193,44 @@ To override, create `~/.config/task-centralization/credentials.json`:
 ### Manual Sync
 
 ```bash
-# Sync new meetings
+# Sync new meetings (from project directory)
 ./scripts/granola_sync.py
 
+# Or with absolute path
+/path/to/task-centralization-system/scripts/granola_sync.py
+
 # Or with UV explicitly
-uv run scripts/granola_sync.py
+uv run /path/to/task-centralization-system/scripts/granola_sync.py
 ```
 
 ### Backfill Historical Meetings
 
 ```bash
 # Process last 7 days
-uv run python src/processor.py --backfill 7
+uv run python /path/to/task-centralization-system/src/processor.py --backfill 7
 
 # Process specific meeting
-uv run python src/processor.py --doc-id <granola-document-id>
+uv run python /path/to/task-centralization-system/src/processor.py --doc-id <granola-document-id>
 ```
 
 ### Monitoring
 
 ```bash
 # View sync logs
-tail -f logs/granola_sync.log
+tail -f /path/to/task-centralization-system/logs/granola_sync.log
 
 # Check cron logs
-tail -f logs/cron.log
+tail -f /path/to/task-centralization-system/logs/cron.log
 
 # View sync status
-cat logs/status.json
+cat /path/to/task-centralization-system/logs/status.json
 ```
 
 ### Disabling LLM Enrichment
 
 To sync meetings without LLM processing (faster, no API cost):
 
-Edit `scripts/granola_sync.py`:
+Edit `/path/to/task-centralization-system/scripts/granola_sync.py`:
 ```python
 processor = GranolaProcessor(enable_llm=False)
 ```
@@ -295,9 +298,9 @@ uv add --dev package-name
 
 ```bash
 # Test extraction on a specific meeting
-uv run python src/llm_parser_perplexity.py \
-  --file "path/to/meeting.md" \
-  --output output.json \
+uv run python /path/to/task-centralization-system/src/llm_parser_perplexity.py \
+  --file "/path/to/your-vault/00_Inbox/Meetings/meeting.md" \
+  --output /tmp/output.json \
   --enrich
 ```
 
@@ -308,7 +311,7 @@ uv run python src/llm_parser_perplexity.py \
 ### "No module named 'requests'"
 
 **Cause**: Running outside UV environment
-**Fix**: Use `./scripts/granola_sync.py` (has `uv run` shebang) or run explicitly with `uv run`
+**Fix**: Use the shebang (`/path/to/task-centralization-system/scripts/granola_sync.py`) or run explicitly with `uv run`
 
 ### "Granola credentials not found"
 
