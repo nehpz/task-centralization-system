@@ -39,6 +39,7 @@ jobs:
         uses: luizm/action-sh-checker@v0.9.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHFMT_OPTS: "-i 2"  # Use 2 spaces (matches pre-commit config)
         with:
           sh_checker_comment: false
           sh_checker_exclude: ".git"
