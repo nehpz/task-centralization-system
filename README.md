@@ -190,7 +190,9 @@ Create `~/.config/task-centralization/credentials.json` **only if** you want to:
 - `sonar-reasoning` - $1 input / $5 output per 1M tokens
 - `sonar-reasoning-pro` - $2 input / $8 output per 1M tokens
 
-See `config/credentials.example.json` for all available options including Notion integration.
+**Config file templates:**
+- `config/credentials.minimal.json` - Clean copy-paste template (no comments)
+- `config/credentials.example.json` - Fully documented with all options
 
 ---
 
