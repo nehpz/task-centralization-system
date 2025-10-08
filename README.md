@@ -4,6 +4,7 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![UV](https://img.shields.io/badge/uv-latest-blue)](https://github.com/astral-sh/uv)
+[![CI](https://github.com/yourusername/task-centralization-system/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/task-centralization-system/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Transform your meeting notes into actionable insights automatically. This system syncs meetings from [Granola](https://www.granola.ai), enriches them with AI-extracted action items, decisions, and entities, then integrates seamlessly with your Obsidian vault.
