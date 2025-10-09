@@ -1,0 +1,6 @@
+# Typos configuration for spell checking
+# See: https://github.com/crate-ci/typos
+
+[default.extend-words]
+# Business abbreviations used in example prompts
+VAS = "VAS"  # Valid business abbreviation (not "WAS")

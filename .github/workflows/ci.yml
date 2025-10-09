@@ -39,6 +39,7 @@ jobs:
         uses: luizm/action-sh-checker@v0.9.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHFMT_OPTS: "-i 2"  # Use 2 spaces (matches pre-commit config)
         with:
           sh_checker_comment: false
           sh_checker_exclude: ".git"
@@ -58,7 +59,7 @@ jobs:
         run: uv python install 3.11
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-groups --all-extras
 
       - name: Run Ruff linter
         run: uv run ruff check src/ scripts/
@@ -81,7 +82,7 @@ jobs:
         run: uv python install 3.11
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-groups --all-extras
 
       - name: Run mypy
         run: uv run mypy src/ scripts/
@@ -102,7 +103,7 @@ jobs:
         run: uv python install 3.11
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --all-groups --all-extras
 
       - name: Run tests
         run: uv run pytest --cov=src --cov-report=term-missing

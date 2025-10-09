@@ -183,13 +183,19 @@ class ProseMirrorConverter:
         """Convert blockquote node"""
         # Convert content and add '> ' prefix
         temp_converter = ProseMirrorConverter()
-        temp_converter.output_lines = []
 
         for content_node in node.get("content", []):
             temp_converter._convert_node(content_node)
 
+        lines_to_process = temp_converter.output_lines
+        # The content conversion might leave a trailing empty line from the last
+        # paragraph, which we don't want to turn into a standalone ">" line.
+        if lines_to_process and lines_to_process[-1] == "":
+            lines_to_process = lines_to_process[:-1]
+
         # Add quote markers
-        for line in temp_converter.output_lines:
+        for line in lines_to_process:
+            # For empty lines between paragraphs, we want ">", not "> ".
             if line.strip():
                 self.output_lines.append(f"> {line}")
             else:
