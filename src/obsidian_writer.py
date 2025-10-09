@@ -67,7 +67,7 @@ class ObsidianWriter:
             note_content = self._generate_note(metadata, markdown_content)
 
             # Write to file
-            filepath = self.inbox_path / filename
+            filepath: Path = self.inbox_path / filename
 
             with open(filepath, "w", encoding="utf-8") as f:
                 f.write(note_content)
