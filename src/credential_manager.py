@@ -114,7 +114,7 @@ class CredentialManager:
             logger.error("Granola credentials not loaded")
             return None
 
-        access_token = self.credentials["granola"].get("access_token")
+        access_token: str | None = self.credentials["granola"].get("access_token")
 
         if not access_token:
             logger.error("Granola access token is empty")
@@ -174,6 +174,15 @@ class CredentialManager:
 
         return {"provider": provider, "api_key": api_key, "model": model}
 
+    def get_llm_config(self) -> dict[str, str] | None:
+        """
+        Get LLM configuration (alias for get_llm_credentials for compatibility)
+
+        Returns:
+            Dictionary with provider, api_key, and model, or None if not configured
+        """
+        return self.get_llm_credentials()
+
     def get_user_info(self) -> dict[str, str]:
         """
         Get user information
@@ -185,7 +194,8 @@ class CredentialManager:
             logger.warning("User info not configured, using defaults")
             return {"name": "User", "email": "user@example.com"}
 
-        return self.credentials["user"]
+        user_info: dict[str, str] = self.credentials["user"]
+        return user_info
 
     def get_vault_path(self) -> Path:
         """
