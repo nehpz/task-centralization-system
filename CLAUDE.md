@@ -46,7 +46,7 @@ logs/                             # Sync logs (gitignored)
 ## Development Setup
 
 ### Prerequisites
-- Python 3.11+ (using 3.13)
+- Python 3.11+ (using 3.12)
 - [uv](https://github.com/astral-sh/uv) package manager
 - Granola app installed (for credentials)
 - Perplexity API key
