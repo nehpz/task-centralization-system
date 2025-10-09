@@ -364,6 +364,25 @@ uv run python /path/to/task-centralization-system/src/llm_parser_perplexity.py \
 
 ## Troubleshooting
 
+### "env: uv: No such file or directory" (Cron)
+
+**Cause**: Cron can't find `uv` binary in PATH
+**Fix**: The `run_sync.sh` script automatically detects `uv` in common locations:
+- `/opt/homebrew/bin/uv` (Homebrew Apple Silicon)
+- `/usr/local/bin/uv` (Homebrew Intel)
+- `~/.cargo/bin/uv` (Cargo install)
+- `~/.local/bin/uv` (Local install)
+
+If `uv` is in a non-standard location, set the `UV_PATH` environment variable:
+
+```bash
+# In crontab -e, add before the cron entry:
+UV_PATH=/custom/path/to/uv
+*/15 * * * * /path/to/task-centralization-system/scripts/run_sync.sh
+```
+
+Or modify `run_sync.sh` to add your custom path to the `common_paths` array.
+
 ### "No module named 'requests'"
 
 **Cause**: Running outside UV environment
@@ -386,6 +405,18 @@ uv run python /path/to/task-centralization-system/src/llm_parser_perplexity.py \
 
 **Cause**: Granola ID detection failed
 **Fix**: Check logs for errors. The system searches for Granola IDs in existing notes to prevent duplicates.
+
+### Testing Cron Environment
+
+To test if cron will work with your setup:
+
+```bash
+# Simulate cron environment (minimal PATH)
+env -i HOME="$HOME" USER="$USER" bash /path/to/task-centralization-system/scripts/run_sync.sh
+
+# Check logs for success
+tail /path/to/task-centralization-system/logs/cron.log
+```
 
 ---
 
