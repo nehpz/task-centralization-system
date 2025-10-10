@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Service Label -->
+    <key>Label</key>
+    <string>com.rzp.slack-monitor</string>
+
+    <!-- Program to run -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/stephen/.local/bin/uv</string>
+        <string>run</string>
+        <string>/Users/stephen/Projects/rzp-labs/task-centralization-system/src/slack_cdp_monitor.py</string>
+        <string>--vault</string>
+        <string>/Users/stephen/Obsidian/zenyth</string>
+        <string>--interval</string>
+        <string>60</string>
+    </array>
+
+    <!-- Working Directory -->
+    <key>WorkingDirectory</key>
+    <string>/Users/stephen/Projects/rzp-labs/task-centralization-system</string>
+
+    <!-- Environment Variables -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/stephen/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>PERPLEXITY_API_KEY</key>
+        <string>__REPLACE_WITH_ACTUAL_KEY__</string>
+    </dict>
+
+    <!-- Logging -->
+    <key>StandardOutPath</key>
+    <string>/Users/stephen/Projects/rzp-labs/task-centralization-system/logs/slack_monitor_stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/stephen/Projects/rzp-labs/task-centralization-system/logs/slack_monitor_stderr.log</string>
+
+    <!-- Run on Load -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Keep Alive (restart if crashes) -->
+    <key>KeepAlive</key>
+    <dict>
+        <!-- Only keep alive if successful exit (don't restart on intentional stop) -->
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <!-- Throttle restarts (wait 10 seconds between restart attempts) -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <!-- Process Type (background daemon) -->
+    <key>ProcessType</key>
+    <string>Background</string>
+
+    <!-- Nice value (lower priority than interactive processes) -->
+    <key>Nice</key>
+    <integer>1</integer>
+</dict>
+</plist>
