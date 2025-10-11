@@ -12,6 +12,7 @@ from typing import Any
 from credential_manager import CredentialManager
 from granola_fetcher import GranolaFetcher
 from obsidian_writer import ObsidianWriter
+from sync_state import SyncStateManager
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,7 @@ class GranolaProcessor:
         self.cred_manager = CredentialManager()
         self.fetcher = GranolaFetcher(self.cred_manager)
         self.writer = ObsidianWriter(self.cred_manager)
+        self.state = SyncStateManager()
 
         # Initialize LLM parser if enabled
         self.llm_parser = None
@@ -100,6 +102,12 @@ class GranolaProcessor:
                 logger.info(f"Processing document {i}/{len(documents)}: {title}")
 
                 try:
+                    # Check if already processed
+                    if self.state.is_processed(doc_id):
+                        logger.info("  → Already processed, skipping")
+                        results["skipped"] += 1
+                        continue
+
                     # Check if document is valid meeting
                     if not doc.get("valid_meeting", True):
                         logger.info(f"  Skipping invalid meeting: {doc_id}")
@@ -113,6 +121,9 @@ class GranolaProcessor:
                         results["processed"] += 1
                         results["notes_created"].append(str(filepath))
                         logger.info(f"  ✓ Created: {filepath.name}")
+
+                        # Mark as processed
+                        self.state.mark_processed(doc_id)
 
                         # Enrich with LLM if enabled
                         if self.llm_parser:
@@ -223,9 +234,9 @@ class GranolaProcessor:
                 logger.info(f"Processing {i}/{len(documents)}: {title}")
 
                 try:
-                    # Check if already exists in vault
-                    if self._note_exists(doc_id):
-                        logger.info("  → Already exists, skipping")
+                    # Check if already processed
+                    if self.state.is_processed(doc_id):
+                        logger.info("  → Already processed, skipping")
                         results["skipped"] += 1
                         continue
 
@@ -236,6 +247,9 @@ class GranolaProcessor:
                         results["processed"] += 1
                         results["notes_created"].append(str(filepath))
                         logger.info(f"  ✓ Created: {filepath.name}")
+
+                        # Mark as processed
+                        self.state.mark_processed(doc_id)
                     else:
                         results["failed"] += 1
                         logger.error("  ✗ Failed to create note")
@@ -254,30 +268,6 @@ class GranolaProcessor:
             results["errors"].append(f"Fatal error: {str(e)}")
 
         return results
-
-    def _note_exists(self, granola_id: str) -> bool:
-        """
-        Check if a note for this Granola ID already exists
-
-        Args:
-            granola_id: Granola document ID
-
-        Returns:
-            True if note exists, False otherwise
-        """
-        # Search for files containing the Granola ID
-        meetings_path = self.writer.inbox_path
-
-        for filepath in meetings_path.glob("*.md"):
-            try:
-                with open(filepath, encoding="utf-8") as f:
-                    content = f.read()
-                    if granola_id in content:
-                        return True
-            except Exception as e:
-                logger.debug(f"Error checking {filepath}: {e}")
-
-        return False
 
     def _enrich_note_with_llm(self, filepath: Path) -> None:
         """
@@ -306,6 +296,11 @@ class GranolaProcessor:
 
         # Parse frontmatter
         metadata = yaml.safe_load(frontmatter_yaml)
+
+        # Check if LLM parser is available
+        if not self.llm_parser:
+            logger.warning("LLM parser not available, skipping enrichment")
+            return
 
         # Parse with LLM
         parsed_data = self.llm_parser.parse_meeting(markdown_content, metadata)
