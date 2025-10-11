@@ -12,8 +12,8 @@ from typing import Any
 
 import yaml
 
-from .credential_manager import CredentialManager
-from .format_converter import MetadataExtractor, ProseMirrorConverter
+from credential_manager import CredentialManager
+from format_converter import MetadataExtractor, ProseMirrorConverter
 
 logger = logging.getLogger(__name__)
 
